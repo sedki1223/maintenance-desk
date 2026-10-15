@@ -10,9 +10,18 @@ builder.Services.AddOpenApi();
 builder.Services.AddDbContext<MaintenanceDeskDbContext>(options =>
     options.UseNpgsql(
         builder.Configuration.GetConnectionString("MaintenanceDesk")));
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("MaintenanceDeskWeb", policy =>
+    {
+        policy.WithOrigins("http://localhost:3000")
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
 
 var app = builder.Build();
-
+app.UseCors("MaintenanceDeskWeb");
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
@@ -165,3 +174,4 @@ app.MapPatch(
 .WithName("UpdateMaintenanceRequestStatus");
 
 app.Run();
+public partial class Program { }
