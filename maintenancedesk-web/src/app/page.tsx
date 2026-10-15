@@ -146,22 +146,26 @@ export default function Home() {
   const [updatingRequestId, setUpdatingRequestId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
-  const [today, setToday] = useState("");
-  const [currentYear, setCurrentYear] = useState<number | null>(null);
-
-  useEffect(() => {
+  const [dateLabel] = useState(() => {
     const now = new Date();
-
-    setToday(
-      now.toLocaleDateString("en-US", {
+    return {
+      today: now.toLocaleDateString("en-US", {
         weekday: "long",
         month: "long",
         day: "numeric",
         year: "numeric",
-      })
-    );
-    setCurrentYear(now.getFullYear());
-  }, []);
+        timeZone: "Africa/Tunis",
+      }),
+      currentYear: Number(
+        new Intl.DateTimeFormat("en-US", {
+          year: "numeric",
+          timeZone: "Africa/Tunis",
+        }).format(now)
+      ),
+    };
+  });
+  const today = dateLabel.today;
+  const currentYear = dateLabel.currentYear;
 
   const loadRequests = useCallback(async (isRefresh = false) => {
     if (isRefresh) {
@@ -188,7 +192,12 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    void loadRequests();
+    // Defer the initial request until after the effect has committed.
+    const timer = window.setTimeout(() => {
+      void loadRequests();
+    }, 0);
+
+    return () => window.clearTimeout(timer);
   }, [loadRequests]);
 
   const filteredRequests = useMemo(() => {
