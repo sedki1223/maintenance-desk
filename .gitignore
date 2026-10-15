@@ -1,0 +1,31 @@
+﻿# .NET build output
+**/bin/
+**/obj/
+
+# Node.js dependencies and build output
+**/node_modules/
+**/.next/
+**/out/
+**/coverage/
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+**/secrets.json
+**/appsettings.*.local.json
+
+# Logs and temporary files
+*.log
+*.tmp
+
+# IDE and operating system files
+.vs/
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Local database and container data
+*.dump
+*.bak
